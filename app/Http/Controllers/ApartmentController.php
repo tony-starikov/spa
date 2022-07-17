@@ -35,7 +35,22 @@ class ApartmentController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $request->validate([
+           'name' => 'required|min:3',
+            'image' => 'required|image|mimes:jpeg,png,jpg'
+        ]);
+
+        $apartment = new Apartment();
+        $apartment->name = $request->name;
+
+        $path = $request->file('image')->store('apartments_images');
+        $apartment->image = $path;
+
+        if ($apartment->save()) {
+            return response()->json($apartment, 200);
+        } else {
+            return response()->json($apartment, 500);
+        }
     }
 
     /**
