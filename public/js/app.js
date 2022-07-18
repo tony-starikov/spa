@@ -5418,6 +5418,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return loadApartment;
     }(),
+    deleteApartment: function () {
+      var _deleteApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(apartment) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (window.confirm("Are you sure you want to delete ".concat(apartment.name))) {
+                  _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt("return");
+
+              case 2:
+                _context2.prev = 2;
+                _context2.next = 5;
+                return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.deleteApartment(apartment.id);
+
+              case 5:
+                this.apartments = this.apartments.filter(function (obj) {
+                  return obj.id != apartment.id;
+                });
+                this.flashMessage.success({
+                  message: 'Apartment deleted successfully!',
+                  time: 5000
+                });
+                _context2.next = 12;
+                break;
+
+              case 9:
+                _context2.prev = 9;
+                _context2.t0 = _context2["catch"](2);
+                this.flashMessage.error({
+                  message: _context2.t0.response.data.message,
+                  time: 5000
+                });
+
+              case 12:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[2, 9]]);
+      }));
+
+      function deleteApartment(_x) {
+        return _deleteApartment.apply(this, arguments);
+      }
+
+      return deleteApartment;
+    }(),
     attachImage: function attachImage() {
       this.apartmentData.image = this.$refs.newApartmentImage.files[0];
       var reader = new FileReader();
@@ -5427,54 +5478,60 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       reader.readAsDataURL(this.apartmentData.image);
     },
     createApartment: function () {
-      var _createApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var formData, response;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      var _createApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var formData, response, input;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
                 formData = new FormData();
                 formData.append('name', this.apartmentData.name);
                 formData.append('image', this.apartmentData.image);
-                _context2.prev = 3;
-                _context2.next = 6;
+                _context3.prev = 3;
+                _context3.next = 6;
                 return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.createApartment(formData);
 
               case 6:
-                response = _context2.sent;
+                response = _context3.sent;
                 // console.log(response);
                 this.apartments.unshift(response.data);
                 this.flashMessage.success({
                   message: 'Apartment stored successfully!',
                   time: 5000
                 });
-                _context2.next = 20;
+                this.apartmentData = {
+                  name: '',
+                  image: ''
+                };
+                input = document.getElementById('image');
+                input.value = '';
+                _context3.next = 23;
                 break;
 
-              case 11:
-                _context2.prev = 11;
-                _context2.t0 = _context2["catch"](3);
-                _context2.t1 = _context2.t0.response.status;
-                _context2.next = _context2.t1 === 422 ? 16 : 18;
+              case 14:
+                _context3.prev = 14;
+                _context3.t0 = _context3["catch"](3);
+                _context3.t1 = _context3.t0.response.status;
+                _context3.next = _context3.t1 === 422 ? 19 : 21;
                 break;
 
-              case 16:
-                this.errors = _context2.t0.response.data.errors;
-                return _context2.abrupt("break", 20);
+              case 19:
+                this.errors = _context3.t0.response.data.errors;
+                return _context3.abrupt("break", 23);
 
-              case 18:
+              case 21:
                 this.flashMessage.error({
                   message: 'Some error occurred, Please try again!',
                   time: 5000
                 });
-                return _context2.abrupt("break", 20);
+                return _context3.abrupt("break", 23);
 
-              case 20:
+              case 23:
               case "end":
-                return _context2.stop();
+                return _context3.stop();
             }
           }
-        }, _callee2, this, [[3, 11]]);
+        }, _callee3, this, [[3, 14]]);
       }));
 
       function createApartment() {
@@ -5839,7 +5896,27 @@ var render = function render() {
         src: "".concat(_vm.$store.state.serverPath, "/storage/").concat(apartment.image),
         alt: apartment.name
       }
-    })])])]);
+    }), _vm._v(" "), _c("div", {
+      staticClass: "btn-group mt-3",
+      attrs: {
+        role: "group"
+      }
+    }, [_c("button", {
+      staticClass: "btn btn-outline-primary",
+      attrs: {
+        type: "button"
+      }
+    }, [_vm._v("Update")]), _vm._v(" "), _c("button", {
+      staticClass: "btn btn-outline-primary",
+      attrs: {
+        type: "button"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.deleteApartment(apartment);
+        }
+      }
+    }, [_vm._v("Delete")])])])])]);
   })], 2)]);
 };
 
@@ -6024,6 +6101,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__["default"]({
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "createApartment": () => (/* binding */ createApartment),
+/* harmony export */   "deleteApartment": () => (/* binding */ deleteApartment),
 /* harmony export */   "loadAllApartment": () => (/* binding */ loadAllApartment)
 /* harmony export */ });
 /* harmony import */ var _http_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./http_service */ "./resources/js/services/http_service.js");
@@ -6033,6 +6111,9 @@ function createApartment(data) {
 }
 function loadAllApartment() {
   return (0,_http_service__WEBPACK_IMPORTED_MODULE_0__.http)().get('/apartments');
+}
+function deleteApartment(id) {
+  return (0,_http_service__WEBPACK_IMPORTED_MODULE_0__.http)()["delete"]("/apartments/".concat(id));
 }
 
 /***/ }),

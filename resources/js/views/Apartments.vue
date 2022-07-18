@@ -33,6 +33,10 @@
                         <p>{{apartment.id}}</p>
                         <p>{{apartment.name}}</p>
                         <img :src="`${$store.state.serverPath}/storage/${apartment.image}`" class="img-fluid" :alt="apartment.name">
+                        <div class="btn-group mt-3" role="group">
+                            <button type="button" class="btn btn-outline-primary">Update</button>
+                            <button v-on:click="deleteApartment(apartment)" type="button" class="btn btn-outline-primary">Delete</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,6 +76,32 @@
                     });
                 }
             },
+            deleteApartment: async function(apartment) {
+                if (!window.confirm(`Are you sure you want to delete ${apartment.name}`)) {
+                    return;
+                }
+
+                try {
+                    await apartmentService.deleteApartment(apartment.id);
+
+                    this.apartments = this.apartments.filter(
+                        obj => {
+                            return obj.id != apartment.id;
+                        }
+                    );
+
+                    this.flashMessage.success({
+                        message: 'Apartment deleted successfully!',
+                        time: 5000
+                    });
+                } catch (error) {
+                    this.flashMessage.error({
+                        message: error.response.data.message,
+                        time: 5000
+                    });
+                }
+
+            },
             attachImage() {
                 this.apartmentData.image = this.$refs.newApartmentImage.files[0];
                 let reader = new FileReader();
@@ -97,6 +127,14 @@
                         message: 'Apartment stored successfully!',
                         time: 5000
                     });
+
+                    this.apartmentData = {
+                        name: '',
+                        image: ''
+                    }
+
+                    let input = document.getElementById('image');
+                    input.value = ''
                 } catch (error) {
                     // console.log(error.response.status);
                     switch (error.response.status) {

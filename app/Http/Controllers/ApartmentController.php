@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Apartment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ApartmentController extends Controller
 {
@@ -50,7 +51,10 @@ class ApartmentController extends Controller
         if ($apartment->save()) {
             return response()->json($apartment, 200);
         } else {
-            return response()->json($apartment, 500);
+            return response()->json([
+                'message' => 'Some error occurred, please try again!',
+                'status_code' => 500
+            ], 500);
         }
     }
 
@@ -96,6 +100,18 @@ class ApartmentController extends Controller
      */
     public function destroy(Apartment $apartment)
     {
-        //
+        if ($apartment->delete()) {
+            Storage::delete($apartment->image);
+
+            return response()->json([
+                'message' => 'Apartment deleted successfully!',
+                'status_code' => 200
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Some error occurred, please try again!',
+                'status_code' => 500
+            ], 500);
+        }
     }
 }
