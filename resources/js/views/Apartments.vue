@@ -61,7 +61,7 @@
 
             <h2>Apartments list</h2>
 
-            <div v-for="(apartment, index) in apartments" :key="index" class="col-6 col-md-4 mb-3">
+            <div v-for="(apartment, index) in apartments.data" :key="index" class="col-6 col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
                         <p>{{apartment.id}}</p>
@@ -77,6 +77,8 @@
             </div>
         </div>
 
+        <advanced-laravel-vue-paginate :data="apartments" @paginateTo="loadApartments"/>
+
     </div>
 
 </template>
@@ -87,7 +89,7 @@
         name: 'apartment',
         data() {
             return {
-                apartments: [],
+                apartments: {},
                 apartmentData: {
                     name: '',
                     image: ''
@@ -97,6 +99,7 @@
                     name: '',
                     image: ''
                 },
+                laravelData: {},
                 errors: {}
             }
         },
@@ -104,11 +107,18 @@
             this.loadApartments();
         },
         methods: {
-            loadApartments: async function() {
+            async getResults(page = 1) {
+                const response = await apartmentService.loadAllApartmentPaginate(page);
+                this.laravelData = response.data;
+            },
+            loadApartments: async function(page = 1) {
                 try {
-                    const response = await apartmentService.loadAllApartment();
-                    this.apartments = response.data.data;
-                    console.log(this.apartments);
+                    const response = await apartmentService.loadAllApartmentPaginate(page);
+                    this.apartments = response.data;
+                    // const response = await apartmentService.loadAllApartment();
+                    // this.apartments = response.data.data;
+                    // console.log(this.apartments);
+                    // console.log(response.meta);
                 } catch (error) {
                     this.flashMessage.error({
                         message: 'Some error occurred, Please refresh!',

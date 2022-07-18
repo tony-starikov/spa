@@ -4,13 +4,15 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+require('./bootstrap');
+
 import Vue from "vue";
 import store from "./store";
 import router from './router';
 import FlashMessage from '@smartweb/vue-flash-message';
+import 'advanced-laravel-vue-paginate/dist/advanced-laravel-vue-paginate.css'
 
-require('./bootstrap');
-
+Vue.use(require('advanced-laravel-vue-paginate'));
 Vue.use(FlashMessage);
 
 window.Vue = require('vue').default;

@@ -15,7 +15,7 @@ class ApartmentController extends Controller
      */
     public function index()
     {
-        $apartments = Apartment::orderBy('created_at', 'desc')->paginate(); // 15 by default
+        $apartments = Apartment::orderBy('created_at', 'desc')->paginate(2); // 15 by default
         return response()->json($apartments, 200);
     }
 

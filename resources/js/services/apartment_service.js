@@ -12,6 +12,10 @@ export function loadAllApartment() {
     return http().get('/apartments');
 }
 
+export function loadAllApartmentPaginate(page = 1) {
+    return http().get('/apartments?page=' + page);
+}
+
 export function deleteApartment(id) {
     return http().delete(`/apartments/${id}`);
 }
