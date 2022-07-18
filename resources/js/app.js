@@ -4,9 +4,14 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import Vue from "vue";
+import store from "./store";
+import router from './router';
+import FlashMessage from '@smartweb/vue-flash-message';
+
 require('./bootstrap');
 
-import router from './router';
+Vue.use(FlashMessage);
 
 window.Vue = require('vue').default;
 
@@ -31,4 +36,5 @@ Vue.component('Footer', require('./components/Footer.vue').default);
 const app = new Vue({
     el: '#app',
     router,
+    store,
 });

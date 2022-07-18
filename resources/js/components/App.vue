@@ -9,14 +9,14 @@
             </div>
         </div>
 
+        <FlashMessage :position="'right bottom'"></FlashMessage>
+
         <Footer />
     </div>
 </template>
 
 <script>
-    import Footer from "./Footer";
     export default {
-        components: {Footer},
         mounted() {
             console.log('Component mounted.')
         }
