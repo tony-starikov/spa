@@ -89,7 +89,32 @@ class ApartmentController extends Controller
      */
     public function update(Request $request, Apartment $apartment)
     {
-        //
+        $request->validate([
+            'name' => 'required|min:3',
+        ]);
+
+        $apartment->name = $request->name;
+
+        if ($request->hasFile('image')) {
+            $request->validate([
+                'image' => 'image|mimes:jpeg,jpg,png',
+            ]);
+
+            Storage::delete($apartment->image);
+
+            $path = $request->file('image')->store('apartments_images');
+            $apartment->image = $path;
+        }
+
+        if ($apartment->save()) {
+            return response()->json($apartment, 200);
+        } else {
+            Storage::delete($path);
+            return response()->json([
+                'message' => 'Some error occurred on update, please try again!',
+                'status_code' => 500
+            ], 500);
+        }
     }
 
     /**

@@ -23,6 +23,40 @@
             </form>
         </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form v-on:submit.prevent="updateApartment">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" v-model="editApartmentData.name" class="form-control" id="nameEdit">
+                                <div class="invalid-feedback d-inline-block" v-if="errors.name">{{errors.name[0]}}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Image</label>
+                                <div class="my-3" v-if="editApartmentData.image">
+                                    <img class="img-fluid" alt="img" :src="`${$store.state.serverPath}/storage/${editApartmentData.image}`" ref="editApartmentImageDisplay">
+                                </div>
+                                <input type="file" v-on:change="editAttachImage" ref="editApartmentImage" class="form-control" id="imageEdit">
+                                <div class="invalid-feedback d-inline-block" v-if="errors.image">{{errors.image[0]}}</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="row mt-3">
 
             <h2>Apartments list</h2>
@@ -34,7 +68,8 @@
                         <p>{{apartment.name}}</p>
                         <img :src="`${$store.state.serverPath}/storage/${apartment.image}`" class="img-fluid" :alt="apartment.name">
                         <div class="btn-group mt-3" role="group">
-                            <button type="button" class="btn btn-outline-primary">Update</button>
+                            <!-- Button trigger modal -->
+                            <button v-on:click="editApartment(apartment)" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button>
                             <button v-on:click="deleteApartment(apartment)" type="button" class="btn btn-outline-primary">Delete</button>
                         </div>
                     </div>
@@ -57,14 +92,19 @@
                     name: '',
                     image: ''
                 },
+                editApartmentData: {
+                    id: '',
+                    name: '',
+                    image: ''
+                },
                 errors: {}
             }
         },
         mounted() {
-            this.loadApartment();
+            this.loadApartments();
         },
         methods: {
-            loadApartment: async function() {
+            loadApartments: async function() {
                 try {
                     const response = await apartmentService.loadAllApartment();
                     this.apartments = response.data.data;
@@ -75,6 +115,44 @@
                         time: 5000
                     });
                 }
+            },
+            editApartment: async function(apartment) {
+                this.editApartmentData.id = apartment.id;
+                this.editApartmentData.name = apartment.name;
+                this.editApartmentData.image = apartment.image;
+                console.log(apartment.id);
+            },
+            updateApartment: async function() {
+                try {
+                    const formData = new FormData();
+                    formData.append('name', this.editApartmentData.name);
+                    formData.append('image', this.editApartmentData.image);
+                    formData.append('_method', 'put');
+
+                    const response = await apartmentService.updateApartment(this.editApartmentData.id, formData);
+                    this.apartments.map(
+                        apartment => {
+                            if (apartment.id == response.data.id) {
+                                for (let key in response.data) {
+                                    apartment[key] = response.data[key];
+                                }
+                            }
+                        }
+
+                    );
+
+                    this.flashMessage.success({
+                        message: 'Apartment updated successfully!',
+                        time: 5000
+                    });
+                } catch (error) {
+                    this.flashMessage.error({
+                        message: 'Some error occurred on update, Please refresh!',
+                        time: 5000
+                    });
+                }
+
+                this.hideEditApartmentModal();
             },
             deleteApartment: async function(apartment) {
                 if (!window.confirm(`Are you sure you want to delete ${apartment.name}`)) {
@@ -111,6 +189,16 @@
                 }.bind(this), false);
 
                 reader.readAsDataURL(this.apartmentData.image);
+            },
+            editAttachImage() {
+                this.editApartmentData.image = this.$refs.editApartmentImage.files[0];
+                let reader = new FileReader();
+
+                reader.addEventListener('load', function () {
+                    this.$refs.editApartmentImageDisplay.src = reader.result
+                }.bind(this), false);
+
+                reader.readAsDataURL(this.editApartmentData.image);
             },
             createApartment: async function() {
                 let formData = new FormData();
@@ -149,6 +237,10 @@
                             break;
                     }
                 }
+            },
+            hideEditApartmentModal() {
+                console.log('modal closed');
+                // this.$refs.exampleModal.on("hidden.bs.modal", () => {})
             }
         }
     }

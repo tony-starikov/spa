@@ -4,6 +4,10 @@ export function createApartment(data) {
     return httpFile().post('/apartments', data);
 }
 
+export function updateApartment(id, data) {
+    return httpFile().post(`/apartments/${id}`, data);
+}
+
 export function loadAllApartment() {
     return http().get('/apartments');
 }
