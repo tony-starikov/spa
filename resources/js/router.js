@@ -6,6 +6,7 @@ import Apartments from "./views/Apartments";
 import Register from "./views/autentication/Register";
 import Login from "./views/autentication/Login";
 import ResetPassword from "./views/autentication/ResetPassword";
+import * as auth from "./services/auth_service";
 
 Vue.use(Router);
 
@@ -23,7 +24,14 @@ const routes = [
     {
         path: '/apartments',
         name: 'apartments',
-        component: Apartments
+        component: Apartments,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next('login');
+            } else {
+                next();
+            }
+        }
     },
     {
         path: '/register',

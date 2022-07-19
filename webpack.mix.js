@@ -14,3 +14,13 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .vue()
     .sass('resources/sass/app.scss', 'public/css');
+
+mix.webpackConfig({
+    resolve: {
+        alias: {
+            path: require.resolve("path-browserify"),
+            "crypto": require.resolve("crypto-browserify"),
+            "stream": require.resolve("stream-browserify")
+        }
+    }
+});

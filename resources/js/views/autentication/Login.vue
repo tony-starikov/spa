@@ -5,14 +5,16 @@
                 Login
             </div>
             <div class="card-body">
-                <form>
+                <form v-on:submit.prevent="login">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <label for="email" class="form-label">Email</label>
+                        <input v-model="user.email" type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp">
+                        <div class="invalid-feedback d-inline-block" v-if="errors.email">{{errors.email[0]}}</div>
                     </div>
                     <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1">
+                        <label for="password" class="form-label">Password</label>
+                        <input v-model="user.password" type="password" class="form-control" name="password" id="password">
+                        <div class="invalid-feedback d-inline-block" v-if="errors.password">{{errors.password[0]}}</div>
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" name="remember_me" id="remember_me">
@@ -32,9 +34,67 @@
 </template>
 
 <script>
+    import * as auth from "../../services/auth_service";
     export default {
+        name: 'Login',
         mounted() {
             console.log('Component mounted.')
-        }
+        },
+        data() {
+            return {
+                user: {
+                    email: '',
+                    password: '',
+                    remember_me: false,
+                },
+                errors: {},
+            }
+        },
+        methods: {
+            login: async function() {
+                try {
+                    const response = await auth.login(this.user);
+
+                    console.log(response);
+                    this.errors = {};
+                    this.user = {
+                        name: '',
+                        email: '',
+                        remember_me: false,
+                    };
+
+                    this.flashMessage.success({
+                        message: 'Login successfully!',
+                        time: 5000
+                    });
+
+                    this.$router.push('apartments');
+                } catch (error) {
+                    switch (error.response.status) {
+                        case 422:
+                            this.errors = error.response.data.errors;
+                            break;
+                        case 401:
+                            this.flashMessage.error({
+                                message: error.response.data.message,
+                                time: 5000
+                            });
+                            break;
+                        case 500:
+                            this.flashMessage.error({
+                                message: error.response.data.message,
+                                time: 5000
+                            });
+                            break;
+                        default:
+                            this.flashMessage.error({
+                                message: 'Some error occurred, Please try again!',
+                                time: 5000
+                            });
+                            break;
+                    }
+                }
+            }
+        },
     }
 </script>
