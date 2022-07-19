@@ -99,7 +99,6 @@
                     name: '',
                     image: ''
                 },
-                laravelData: {},
                 errors: {}
             }
         },
@@ -107,10 +106,10 @@
             this.loadApartments();
         },
         methods: {
-            async getResults(page = 1) {
-                const response = await apartmentService.loadAllApartmentPaginate(page);
-                this.laravelData = response.data;
-            },
+            // async getResults(page = 1) {
+            //     const response = await apartmentService.loadAllApartmentPaginate(page);
+            //     this.laravelData = response.data;
+            // },
             loadApartments: async function(page = 1) {
                 try {
                     const response = await apartmentService.loadAllApartmentPaginate(page);
@@ -140,22 +139,29 @@
                     formData.append('_method', 'put');
 
                     const response = await apartmentService.updateApartment(this.editApartmentData.id, formData);
-                    this.apartments.map(
-                        apartment => {
-                            if (apartment.id == response.data.id) {
-                                for (let key in response.data) {
-                                    apartment[key] = response.data[key];
-                                }
-                            }
-                        }
+                    // await console.log(response.data);
+                    // await this.apartments.data.map(
+                    //     apartment => {
+                    //         if (apartment.id == response.data.id) {
+                    //             apartment.name = response.data.name;
+                    //             apartment.image = response.data.image;
+                    //             // console.log(response.data);
+                    //             // for (let key in response.data) {
+                    //             //     console.log(apartment.key);
+                    //             //     apartment.key = response.data[key];
+                    //             // }
+                    //         }
+                    //     }
+                    // );
 
-                    );
+                    await this.loadApartments();
 
                     this.flashMessage.success({
                         message: 'Apartment updated successfully!',
                         time: 5000
                     });
                 } catch (error) {
+                    // console.log(error);
                     this.flashMessage.error({
                         message: 'Some error occurred on update, Please refresh!',
                         time: 5000
@@ -172,11 +178,13 @@
                 try {
                     await apartmentService.deleteApartment(apartment.id);
 
-                    this.apartments = this.apartments.filter(
-                        obj => {
-                            return obj.id != apartment.id;
-                        }
-                    );
+                    // this.apartments.data = this.apartments.data.filter(
+                    //     obj => {
+                    //         return obj['id'] != apartment.id;
+                    //     }
+                    // );
+
+                    await this.loadApartments();
 
                     this.flashMessage.success({
                         message: 'Apartment deleted successfully!',
@@ -219,7 +227,16 @@
                     const response = await apartmentService.createApartment(formData);
                     // console.log(response);
 
-                    this.apartments.unshift(response.data)
+                    // this.apartments.data = Object.entries(this.apartments.data);
+                    //
+                    // Object.assign()
+                    // this.apartments.data.unshift(response.data);
+                    //
+                    // this.apartments.data = Object.fromEntries(this.apartments.data);
+
+                    // await console.log(this.apartments.data);
+
+                    await this.loadApartments();
 
                     this.flashMessage.success({
                         message: 'Apartment stored successfully!',

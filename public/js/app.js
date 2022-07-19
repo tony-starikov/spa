@@ -7330,7 +7330,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         name: '',
         image: ''
       },
-      laravelData: {},
       errors: {}
     };
   },
@@ -7338,59 +7337,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     this.loadApartments();
   },
   methods: {
-    getResults: function getResults() {
-      var _arguments = arguments,
-          _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var page, response;
+    // async getResults(page = 1) {
+    //     const response = await apartmentService.loadAllApartmentPaginate(page);
+    //     this.laravelData = response.data;
+    // },
+    loadApartments: function () {
+      var _loadApartments = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var page,
+            response,
+            _args = arguments;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                page = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : 1;
-                _context.next = 3;
-                return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.loadAllApartmentPaginate(page);
-
-              case 3:
-                response = _context.sent;
-                _this.laravelData = response.data;
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    loadApartments: function () {
-      var _loadApartments = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var page,
-            response,
-            _args2 = arguments;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                page = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : 1;
-                _context2.prev = 1;
-                _context2.next = 4;
+                page = _args.length > 0 && _args[0] !== undefined ? _args[0] : 1;
+                _context.prev = 1;
+                _context.next = 4;
                 return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.loadAllApartmentPaginate(page);
 
               case 4:
-                response = _context2.sent;
+                response = _context.sent;
                 this.apartments = response.data; // const response = await apartmentService.loadAllApartment();
                 // this.apartments = response.data.data;
                 // console.log(this.apartments);
                 // console.log(response.meta);
 
-                _context2.next = 11;
+                _context.next = 11;
                 break;
 
               case 8:
-                _context2.prev = 8;
-                _context2.t0 = _context2["catch"](1);
+                _context.prev = 8;
+                _context.t0 = _context["catch"](1);
                 this.flashMessage.error({
                   message: 'Some error occurred, Please refresh!',
                   time: 5000
@@ -7398,10 +7375,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 11:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, this, [[1, 8]]);
+        }, _callee, this, [[1, 8]]);
       }));
 
       function loadApartments() {
@@ -7411,10 +7388,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return loadApartments;
     }(),
     editApartment: function () {
-      var _editApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(apartment) {
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      var _editApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(apartment) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context3.prev = _context3.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
                 this.editApartmentData.id = apartment.id;
                 this.editApartmentData.name = apartment.name;
@@ -7423,10 +7400,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 4:
               case "end":
-                return _context3.stop();
+                return _context2.stop();
             }
           }
-        }, _callee3, this);
+        }, _callee2, this);
       }));
 
       function editApartment(_x) {
@@ -7436,53 +7413,51 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return editApartment;
     }(),
     updateApartment: function () {
-      var _updateApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+      var _updateApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var formData, response;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                _context4.prev = 0;
+                _context3.prev = 0;
                 formData = new FormData();
                 formData.append('name', this.editApartmentData.name);
                 formData.append('image', this.editApartmentData.image);
                 formData.append('_method', 'put');
-                _context4.next = 7;
+                _context3.next = 7;
                 return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.updateApartment(this.editApartmentData.id, formData);
 
               case 7:
-                response = _context4.sent;
-                this.apartments.map(function (apartment) {
-                  if (apartment.id == response.data.id) {
-                    for (var key in response.data) {
-                      apartment[key] = response.data[key];
-                    }
-                  }
-                });
+                response = _context3.sent;
+                _context3.next = 10;
+                return this.loadApartments();
+
+              case 10:
                 this.flashMessage.success({
                   message: 'Apartment updated successfully!',
                   time: 5000
                 });
-                _context4.next = 15;
+                _context3.next = 16;
                 break;
 
-              case 12:
-                _context4.prev = 12;
-                _context4.t0 = _context4["catch"](0);
+              case 13:
+                _context3.prev = 13;
+                _context3.t0 = _context3["catch"](0);
+                // console.log(error);
                 this.flashMessage.error({
                   message: 'Some error occurred on update, Please refresh!',
                   time: 5000
                 });
 
-              case 15:
+              case 16:
                 this.hideEditApartmentModal();
 
-              case 16:
+              case 17:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4, this, [[0, 12]]);
+        }, _callee3, this, [[0, 13]]);
       }));
 
       function updateApartment() {
@@ -7492,48 +7467,49 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return updateApartment;
     }(),
     deleteApartment: function () {
-      var _deleteApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(apartment) {
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      var _deleteApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(apartment) {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
                 if (window.confirm("Are you sure you want to delete ".concat(apartment.name))) {
-                  _context5.next = 2;
+                  _context4.next = 2;
                   break;
                 }
 
-                return _context5.abrupt("return");
+                return _context4.abrupt("return");
 
               case 2:
-                _context5.prev = 2;
-                _context5.next = 5;
+                _context4.prev = 2;
+                _context4.next = 5;
                 return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.deleteApartment(apartment.id);
 
               case 5:
-                this.apartments = this.apartments.filter(function (obj) {
-                  return obj.id != apartment.id;
-                });
+                _context4.next = 7;
+                return this.loadApartments();
+
+              case 7:
                 this.flashMessage.success({
                   message: 'Apartment deleted successfully!',
                   time: 5000
                 });
-                _context5.next = 12;
+                _context4.next = 13;
                 break;
 
-              case 9:
-                _context5.prev = 9;
-                _context5.t0 = _context5["catch"](2);
+              case 10:
+                _context4.prev = 10;
+                _context4.t0 = _context4["catch"](2);
                 this.flashMessage.error({
-                  message: _context5.t0.response.data.message,
+                  message: _context4.t0.response.data.message,
                   time: 5000
                 });
 
-              case 12:
+              case 13:
               case "end":
-                return _context5.stop();
+                return _context4.stop();
             }
           }
-        }, _callee5, this, [[2, 9]]);
+        }, _callee4, this, [[2, 10]]);
       }));
 
       function deleteApartment(_x2) {
@@ -7559,23 +7535,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       reader.readAsDataURL(this.editApartmentData.image);
     },
     createApartment: function () {
-      var _createApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+      var _createApartment = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var formData, response, input;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context5.prev = _context5.next) {
               case 0:
                 formData = new FormData();
                 formData.append('name', this.apartmentData.name);
                 formData.append('image', this.apartmentData.image);
-                _context6.prev = 3;
-                _context6.next = 6;
+                _context5.prev = 3;
+                _context5.next = 6;
                 return _services_apartment_service__WEBPACK_IMPORTED_MODULE_0__.createApartment(formData);
 
               case 6:
-                response = _context6.sent;
-                // console.log(response);
-                this.apartments.unshift(response.data);
+                response = _context5.sent;
+                _context5.next = 9;
+                return this.loadApartments();
+
+              case 9:
                 this.flashMessage.success({
                   message: 'Apartment stored successfully!',
                   time: 5000
@@ -7586,33 +7564,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 };
                 input = document.getElementById('image');
                 input.value = '';
-                _context6.next = 23;
+                _context5.next = 24;
                 break;
 
-              case 14:
-                _context6.prev = 14;
-                _context6.t0 = _context6["catch"](3);
-                _context6.t1 = _context6.t0.response.status;
-                _context6.next = _context6.t1 === 422 ? 19 : 21;
+              case 15:
+                _context5.prev = 15;
+                _context5.t0 = _context5["catch"](3);
+                _context5.t1 = _context5.t0.response.status;
+                _context5.next = _context5.t1 === 422 ? 20 : 22;
                 break;
 
-              case 19:
-                this.errors = _context6.t0.response.data.errors;
-                return _context6.abrupt("break", 23);
+              case 20:
+                this.errors = _context5.t0.response.data.errors;
+                return _context5.abrupt("break", 24);
 
-              case 21:
+              case 22:
                 this.flashMessage.error({
                   message: 'Some error occurred, Please try again!',
                   time: 5000
                 });
-                return _context6.abrupt("break", 23);
+                return _context5.abrupt("break", 24);
 
-              case 23:
+              case 24:
               case "end":
-                return _context6.stop();
+                return _context5.stop();
             }
           }
-        }, _callee6, this, [[3, 14]]);
+        }, _callee5, this, [[3, 15]]);
       }));
 
       function createApartment() {
