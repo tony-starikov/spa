@@ -29,4 +29,15 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
+Route::group(['prefix' => 'user'], function () {
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('edit-apartment', function () {
+            return response()->json([
+                'message' => 'Admin access',
+                'status_code' => 200
+            ], 200);
+        })->middleware('scope:user');
+    });
+});
+
 Route::resource('/apartments', ApartmentController::class);
