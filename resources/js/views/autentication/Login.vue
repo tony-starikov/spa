@@ -1,5 +1,5 @@
 <template>
-    <div class="col-4 mx-auto">
+    <div class="col-12 col-md-4 mx-auto">
         <div class="card mt-5">
             <div class="card-header">
                 Login
