@@ -1,4 +1,4 @@
-import {http, httpFile} from "./http_service";
+import {http, httpFile, httpWithAuth} from "./http_service";
 import jwt from 'jsonwebtoken';
 
 export function register(user) {
@@ -18,11 +18,27 @@ export function login(user) {
 
 function setToken(user) {
     const token = jwt.sign({ user: user }, 'key');
-    localStorage.setItem('laravel-spa', JSON.stringify(token));
+    localStorage.setItem('laravel-spa', token);
 }
-
 
 export function isLoggedIn() {
     const token = localStorage.getItem('laravel-spa');
     return token != null;
+}
+
+export function logout() {
+    const response = httpWithAuth().get('/auth/logout');
+    localStorage.removeItem('laravel-spa');
+}
+
+export function getAccessToken() {
+    const token = localStorage.getItem('laravel-spa');
+
+    if (!token) {
+        return null
+    }
+
+    const tokenData = jwt.verify(token, 'key');
+
+    return tokenData.user.access_token;
 }

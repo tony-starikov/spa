@@ -25,6 +25,9 @@
                     <li class="nav-item">
                         <router-link class="nav-link" to="/reset-password">Reset Password</router-link>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" v-on:click="logout">Logout</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -32,9 +35,19 @@
 </template>
 
 <script>
+    import * as auth from '../services/auth_service'
     export default {
+        name: 'Header',
         mounted() {
             console.log('Component mounted.')
-        }
+        },
+        methods: {
+            logout: async function() {
+                if (auth.isLoggedIn()) {
+                    auth.logout();
+                }
+                this.$router.push('/login');
+            },
+        },
     }
 </script>

@@ -27,7 +27,7 @@ const routes = [
         component: Apartments,
         beforeEnter(to, from, next) {
             if (!auth.isLoggedIn()) {
-                next('login');
+                next('/login');
             } else {
                 next();
             }
@@ -36,12 +36,26 @@ const routes = [
     {
         path: '/register',
         name: 'register',
-        component: Register
+        component: Register,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next();
+            } else {
+                next('/');
+            }
+        }
     },
     {
         path: '/login',
         name: 'login',
-        component: Login
+        component: Login,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next();
+            } else {
+                next('/');
+            }
+        }
     },
     {
         path: '/reset-password',
