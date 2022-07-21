@@ -26,6 +26,7 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('logout', [AuthController::class, 'logout']);
+        Route::get('profile', [AuthController::class, 'profile']);
     });
 });
 

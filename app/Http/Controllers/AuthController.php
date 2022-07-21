@@ -92,4 +92,16 @@ class AuthController extends Controller
             'status_code' => 200
         ], 200);
     }
+
+    public function profile(Request $request)
+    {
+        if ($request->user()) {
+            return response()->json($request->user(), 200);
+        }
+
+        return response()->json([
+            'message' => 'Not logged in',
+            'status_code' => 500
+        ], 500);
+    }
 }

@@ -28,6 +28,9 @@
                     <li class="nav-item">
                         <a class="nav-link" v-on:click="logout">Logout</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link">{{$store.state.profile.name}}</a>
+                    </li>
                 </ul>
             </div>
         </div>
