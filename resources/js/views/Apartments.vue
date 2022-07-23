@@ -34,7 +34,7 @@
                     <div class="modal-body">
                         <form v-on:submit.prevent="updateApartment">
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="nameEdit" class="form-label">Name</label>
                                 <input type="text" v-model="editApartmentData.name" class="form-control" id="nameEdit">
                                 <div class="invalid-feedback d-inline-block" v-if="errors.name">{{errors.name[0]}}</div>
                             </div>
@@ -84,191 +84,191 @@
 </template>
 
 <script>
-    import * as apartmentService from '../services/apartment_service'
-    export default {
-        name: 'apartment',
-        data() {
-            return {
-                apartments: {},
-                apartmentData: {
-                    name: '',
-                    image: ''
-                },
-                editApartmentData: {
-                    id: '',
-                    name: '',
-                    image: ''
-                },
-                errors: {}
+import * as apartmentService from '../services/apartment_service'
+export default {
+    name: 'Apartments',
+    data() {
+        return {
+            apartments: {},
+            apartmentData: {
+                name: '',
+                image: ''
+            },
+            editApartmentData: {
+                id: '',
+                name: '',
+                image: ''
+            },
+            errors: {}
+        }
+    },
+    mounted() {
+        this.loadApartments();
+    },
+    methods: {
+        // async getResults(page = 1) {
+        //     const response = await apartmentService.loadAllApartmentPaginate(page);
+        //     this.laravelData = response.data;
+        // },
+        loadApartments: async function(page = 1) {
+            try {
+                const response = await apartmentService.loadAllApartmentPaginate(page);
+                this.apartments = response.data;
+                // const response = await apartmentService.loadAllApartment();
+                // this.apartments = response.data.data;
+                // console.log(this.apartments);
+                // console.log(response.meta);
+            } catch (error) {
+                this.flashMessage.error({
+                    message: 'Some error occurred, Please refresh!',
+                    time: 5000
+                });
             }
         },
-        mounted() {
-            this.loadApartments();
+        editApartment: async function(apartment) {
+            this.editApartmentData.id = apartment.id;
+            this.editApartmentData.name = apartment.name;
+            this.editApartmentData.image = apartment.image;
+            console.log(apartment.id);
         },
-        methods: {
-            // async getResults(page = 1) {
-            //     const response = await apartmentService.loadAllApartmentPaginate(page);
-            //     this.laravelData = response.data;
-            // },
-            loadApartments: async function(page = 1) {
-                try {
-                    const response = await apartmentService.loadAllApartmentPaginate(page);
-                    this.apartments = response.data;
-                    // const response = await apartmentService.loadAllApartment();
-                    // this.apartments = response.data.data;
-                    // console.log(this.apartments);
-                    // console.log(response.meta);
-                } catch (error) {
-                    this.flashMessage.error({
-                        message: 'Some error occurred, Please refresh!',
-                        time: 5000
-                    });
-                }
-            },
-            editApartment: async function(apartment) {
-                this.editApartmentData.id = apartment.id;
-                this.editApartmentData.name = apartment.name;
-                this.editApartmentData.image = apartment.image;
-                console.log(apartment.id);
-            },
-            updateApartment: async function() {
-                try {
-                    const formData = new FormData();
-                    formData.append('name', this.editApartmentData.name);
-                    formData.append('image', this.editApartmentData.image);
-                    formData.append('_method', 'put');
+        updateApartment: async function() {
+            try {
+                const formData = new FormData();
+                formData.append('name', this.editApartmentData.name);
+                formData.append('image', this.editApartmentData.image);
+                formData.append('_method', 'put');
 
-                    const response = await apartmentService.updateApartment(this.editApartmentData.id, formData);
-                    // await console.log(response.data);
-                    // await this.apartments.data.map(
-                    //     apartment => {
-                    //         if (apartment.id == response.data.id) {
-                    //             apartment.name = response.data.name;
-                    //             apartment.image = response.data.image;
-                    //             // console.log(response.data);
-                    //             // for (let key in response.data) {
-                    //             //     console.log(apartment.key);
-                    //             //     apartment.key = response.data[key];
-                    //             // }
-                    //         }
-                    //     }
-                    // );
+                const response = await apartmentService.updateApartment(this.editApartmentData.id, formData);
+                // await console.log(response.data);
+                // await this.apartments.data.map(
+                //     apartment => {
+                //         if (apartment.id == response.data.id) {
+                //             apartment.name = response.data.name;
+                //             apartment.image = response.data.image;
+                //             // console.log(response.data);
+                //             // for (let key in response.data) {
+                //             //     console.log(apartment.key);
+                //             //     apartment.key = response.data[key];
+                //             // }
+                //         }
+                //     }
+                // );
 
-                    await this.loadApartments();
+                await this.loadApartments();
 
-                    this.flashMessage.success({
-                        message: 'Apartment updated successfully!',
-                        time: 5000
-                    });
-                } catch (error) {
-                    // console.log(error);
-                    this.flashMessage.error({
-                        message: 'Some error occurred on update, Please refresh!',
-                        time: 5000
-                    });
-                }
-
-                this.hideEditApartmentModal();
-            },
-            deleteApartment: async function(apartment) {
-                if (!window.confirm(`Are you sure you want to delete ${apartment.name}`)) {
-                    return;
-                }
-
-                try {
-                    await apartmentService.deleteApartment(apartment.id);
-
-                    // this.apartments.data = this.apartments.data.filter(
-                    //     obj => {
-                    //         return obj['id'] != apartment.id;
-                    //     }
-                    // );
-
-                    await this.loadApartments();
-
-                    this.flashMessage.success({
-                        message: 'Apartment deleted successfully!',
-                        time: 5000
-                    });
-                } catch (error) {
-                    this.flashMessage.error({
-                        message: error.response.data.message,
-                        time: 5000
-                    });
-                }
-
-            },
-            attachImage() {
-                this.apartmentData.image = this.$refs.newApartmentImage.files[0];
-                let reader = new FileReader();
-
-                reader.addEventListener('load', function () {
-                    this.$refs.newApartmentImageDisplay.src = reader.result
-                }.bind(this), false);
-
-                reader.readAsDataURL(this.apartmentData.image);
-            },
-            editAttachImage() {
-                this.editApartmentData.image = this.$refs.editApartmentImage.files[0];
-                let reader = new FileReader();
-
-                reader.addEventListener('load', function () {
-                    this.$refs.editApartmentImageDisplay.src = reader.result
-                }.bind(this), false);
-
-                reader.readAsDataURL(this.editApartmentData.image);
-            },
-            createApartment: async function() {
-                let formData = new FormData();
-                formData.append('name', this.apartmentData.name);
-                formData.append('image', this.apartmentData.image);
-
-                try {
-                    const response = await apartmentService.createApartment(formData);
-                    // console.log(response);
-
-                    // this.apartments.data = Object.entries(this.apartments.data);
-                    //
-                    // Object.assign()
-                    // this.apartments.data.unshift(response.data);
-                    //
-                    // this.apartments.data = Object.fromEntries(this.apartments.data);
-
-                    // await console.log(this.apartments.data);
-
-                    await this.loadApartments();
-
-                    this.flashMessage.success({
-                        message: 'Apartment stored successfully!',
-                        time: 5000
-                    });
-
-                    this.apartmentData = {
-                        name: '',
-                        image: ''
-                    }
-
-                    let input = document.getElementById('image');
-                    input.value = ''
-                } catch (error) {
-                    // console.log(error.response.status);
-                    switch (error.response.status) {
-                        case 422:
-                            this.errors = error.response.data.errors;
-                            break;
-                        default:
-                            this.flashMessage.error({
-                                message: 'Some error occurred, Please try again!',
-                                time: 5000
-                            });
-                            break;
-                    }
-                }
-            },
-            hideEditApartmentModal() {
-                console.log('modal closed');
-                // this.$refs.exampleModal.on("hidden.bs.modal", () => {})
+                this.flashMessage.success({
+                    message: 'Apartment updated successfully!',
+                    time: 5000
+                });
+            } catch (error) {
+                // console.log(error);
+                this.flashMessage.error({
+                    message: 'Some error occurred on update, Please refresh!',
+                    time: 5000
+                });
             }
+
+            this.hideEditApartmentModal();
+        },
+        deleteApartment: async function(apartment) {
+            if (!window.confirm(`Are you sure you want to delete ${apartment.name}`)) {
+                return;
+            }
+
+            try {
+                await apartmentService.deleteApartment(apartment.id);
+
+                // this.apartments.data = this.apartments.data.filter(
+                //     obj => {
+                //         return obj['id'] != apartment.id;
+                //     }
+                // );
+
+                await this.loadApartments();
+
+                this.flashMessage.success({
+                    message: 'Apartment deleted successfully!',
+                    time: 5000
+                });
+            } catch (error) {
+                this.flashMessage.error({
+                    message: error.response.data.message,
+                    time: 5000
+                });
+            }
+
+        },
+        attachImage() {
+            this.apartmentData.image = this.$refs.newApartmentImage.files[0];
+            let reader = new FileReader();
+
+            reader.addEventListener('load', function () {
+                this.$refs.newApartmentImageDisplay.src = reader.result
+            }.bind(this), false);
+
+            reader.readAsDataURL(this.apartmentData.image);
+        },
+        editAttachImage() {
+            this.editApartmentData.image = this.$refs.editApartmentImage.files[0];
+            let reader = new FileReader();
+
+            reader.addEventListener('load', function () {
+                this.$refs.editApartmentImageDisplay.src = reader.result
+            }.bind(this), false);
+
+            reader.readAsDataURL(this.editApartmentData.image);
+        },
+        createApartment: async function() {
+            let formData = new FormData();
+            formData.append('name', this.apartmentData.name);
+            formData.append('image', this.apartmentData.image);
+
+            try {
+                const response = await apartmentService.createApartment(formData);
+                // console.log(response);
+
+                // this.apartments.data = Object.entries(this.apartments.data);
+                //
+                // Object.assign()
+                // this.apartments.data.unshift(response.data);
+                //
+                // this.apartments.data = Object.fromEntries(this.apartments.data);
+
+                // await console.log(this.apartments.data);
+
+                await this.loadApartments();
+
+                this.flashMessage.success({
+                    message: 'Apartment stored successfully!',
+                    time: 5000
+                });
+
+                this.apartmentData = {
+                    name: '',
+                    image: ''
+                }
+
+                let input = document.getElementById('image');
+                input.value = ''
+            } catch (error) {
+                // console.log(error.response.status);
+                switch (error.response.status) {
+                    case 422:
+                        this.errors = error.response.data.errors;
+                        break;
+                    default:
+                        this.flashMessage.error({
+                            message: 'Some error occurred, Please try again!',
+                            time: 5000
+                        });
+                        break;
+                }
+            }
+        },
+        hideEditApartmentModal() {
+            console.log('modal closed');
+            // this.$refs.exampleModal.on("hidden.bs.modal", () => {})
         }
     }
+}
 </script>
