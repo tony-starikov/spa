@@ -45,6 +45,18 @@ export function getAccessToken() {
     return tokenData.user.access_token;
 }
 
+export function getUserRole() {
+    const token = localStorage.getItem('laravel-spa');
+
+    if (!token) {
+        return null
+    }
+
+    const tokenData = jwt.verify(token, 'key');
+
+    return tokenData.user.user.role;
+}
+
 export function getProfile() {
      return httpWithAuth().get('/auth/profile');
 }

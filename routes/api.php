@@ -30,15 +30,30 @@ Route::group(['prefix' => 'auth'], function () {
     });
 });
 
-Route::group(['prefix' => 'user'], function () {
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::post('edit-apartment', function () {
+Route::group(['middleware' => 'auth:api', 'prefix' => 'user'], function () {
+
+    Route::group(['middleware' => 'scope:user'], function () {
+
+        Route::get('user-page', function () {
+            return response()->json([
+                'message' => 'User access',
+                'status_code' => 200
+            ], 200);
+        });
+
+    });
+
+    Route::group(['middleware' => 'scope:admin'], function () {
+
+        Route::get('admin-page', function () {
             return response()->json([
                 'message' => 'Admin access',
                 'status_code' => 200
             ], 200);
-        })->middleware('scope:user');
+        });
+
     });
+
 });
 
 Route::resource('/apartments', ApartmentController::class);

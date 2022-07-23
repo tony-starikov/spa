@@ -28,9 +28,15 @@
                     <li class="nav-item">
                         <a class="nav-link" v-on:click="logout">Logout</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link">{{$store.state.profile.name}}</a>
+                    <li class="nav-item" v-if="$store.state.profile.role != null">
+                        <a class="nav-link" v-on:click="userScope()">User</a>
                     </li>
+                    <li class="nav-item" v-if="$store.state.profile.role != null">
+                        <a class="nav-link" v-on:click="adminScope()">Admin</a>
+                    </li>
+<!--                    <li class="nav-item" v-if="$store.state.role == 'user'">-->
+<!--                        <a class="nav-link">{{$store.state.profile.role}}</a>-->
+<!--                    </li>-->
                 </ul>
             </div>
         </div>
@@ -39,10 +45,11 @@
 
 <script>
     import * as auth from '../services/auth_service'
+    import * as user from '../services/user_service'
     export default {
         name: 'Header',
         mounted() {
-            console.log('Component mounted.')
+            console.log('Component Header mounted.');
         },
         methods: {
             logout: async function() {
@@ -50,6 +57,22 @@
                     auth.logout();
                 }
                 this.$router.push('/login');
+            },
+            userScope: async function() {
+                try {
+                    const response = await user.userScope();
+                    console.log(response);
+                } catch (error) {
+                    console.log(' ' + error, error.response.status);
+                }
+            },
+            adminScope: async function() {
+                try {
+                    const response = await user.adminScope();
+                    console.log(response);
+                } catch (error) {
+                    console.log(' ' + error, error.response.status);
+                }
             },
         },
     }
