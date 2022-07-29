@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Main from "./views/Main";
 import About from "./views/About";
+import Error404 from "./views/Error404";
 import Register from "./views/autentication/Register";
 import Login from "./views/autentication/Login";
 import ResetPassword from "./views/autentication/ResetPassword";
@@ -54,9 +55,26 @@ const routes = [
         component: ResetPassword
     },
     {
+        path: '*',
+        name: 'Error404',
+        component: Error404
+    },
+    {
         path: '/admin',
         name: 'admin',
         component: Admin,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next('/login');
+            } else {
+                console.log(auth.getUserRole())
+                if (auth.getUserRole() === 'admin') {
+                    next();
+                } else {
+                    next('/404');
+                }
+            }
+        },
         children: [
             {
                 path: 'apartments',
@@ -64,18 +82,23 @@ const routes = [
                 component: AdminApartments,
             },
         ],
-        beforeEnter(to, from, next) {
-            if (!auth.isLoggedIn()) {
-                next('/login');
-            } else {
-                next();
-            }
-        },
     },
     {
         path: '/user',
         name: 'user',
         component: User,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next('/login');
+            } else {
+                console.log(auth.getUserRole())
+                if (auth.getUserRole() === 'user') {
+                    next();
+                } else {
+                    next('/404');
+                }
+            }
+        },
         children: [
             {
                 path: 'apartments',
@@ -83,13 +106,6 @@ const routes = [
                 component: UserApartments,
             },
         ],
-        beforeEnter(to, from, next) {
-            if (!auth.isLoggedIn()) {
-                next('/login');
-            } else {
-                next();
-            }
-        },
     },
 ]
 
