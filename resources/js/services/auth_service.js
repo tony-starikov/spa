@@ -62,3 +62,11 @@ export function getUserRole() {
 export function getProfile() {
      return httpWithAuth().get('/auth/profile');
 }
+
+export function resetPasswordRequest(user) {
+    return http().post('/auth/reset-password-request', user);
+}
+
+export function resetPassword(user) {
+    return http().post('/auth/reset-password', user);
+}

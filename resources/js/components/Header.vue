@@ -20,7 +20,7 @@
                         <router-link class="nav-link" to="/login">Login</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/reset-password">Reset Password</router-link>
+                        <router-link class="nav-link" to="/reset-password-request">Reset Password</router-link>
                     </li>
                     <li v-if="$store.state.profile.role != null" class="nav-item">
                         <a class="nav-link" v-on:click="logout">Logout</a>

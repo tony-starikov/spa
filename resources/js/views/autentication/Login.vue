@@ -27,7 +27,7 @@
             </div>
             <div class="card-footer">
                 <router-link class="d-block link-primary" to="/register">Register an Account</router-link>
-                <router-link class="d-block link-primary" to="/reset-password">Reset Password</router-link>
+                <router-link class="d-block link-primary" to="/reset-password-request">Reset Password</router-link>
             </div>
         </div>
     </div>

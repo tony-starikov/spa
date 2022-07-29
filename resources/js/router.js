@@ -6,6 +6,7 @@ import Error404 from "./views/Error404";
 import Register from "./views/autentication/Register";
 import Login from "./views/autentication/Login";
 import ResetPassword from "./views/autentication/ResetPassword";
+import ResetPasswordRequest from "./views/autentication/ResetPasswordRequest";
 import * as auth from "./services/auth_service";
 import AdminApartments from "./views/admin/AdminApartments";
 import Admin from "./views/admin/Admin"
@@ -50,9 +51,28 @@ const routes = [
         }
     },
     {
-        path: '/reset-password',
+        path: '/reset-password-request',
+        name: 'reset-password-request',
+        component: ResetPasswordRequest,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next();
+            } else {
+                next('/');
+            }
+        }
+    },
+    {
+        path: '/reset-password/:email',
         name: 'reset-password',
-        component: ResetPassword
+        component: ResetPassword,
+        beforeEnter(to, from, next) {
+            if (!auth.isLoggedIn()) {
+                next();
+            } else {
+                next('/');
+            }
+        }
     },
     {
         path: '*',
