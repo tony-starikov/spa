@@ -14514,7 +14514,16 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _vm._m(0);
+  return _c("div", {
+    staticClass: "col-12"
+  }, [_vm._m(0), _vm._v(" "), _c("advanced-laravel-vue-paginate", {
+    attrs: {
+      data: _vm.apartments
+    },
+    on: {
+      paginateTo: _vm.loadApartments
+    }
+  })], 1);
 };
 
 var staticRenderFns = [function () {
@@ -14522,8 +14531,8 @@ var staticRenderFns = [function () {
       _c = _vm._self._c;
 
   return _c("div", {
-    staticClass: "col-12"
-  }, [_c("h1", [_vm._v("About")])]);
+    staticClass: "row mt-3"
+  }, [_c("h2", [_vm._v("About")])]);
 }];
 render._withStripped = true;
 

@@ -1,6 +1,14 @@
 <template>
     <div class="col-12">
-        <h1>About</h1>
+
+        <div class="row mt-3">
+
+            <h2>About</h2>
+
+        </div>
+
+        <advanced-laravel-vue-paginate :data="apartments" @paginateTo="loadApartments"/>
+
     </div>
 </template>
 
