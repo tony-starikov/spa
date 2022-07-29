@@ -14,9 +14,6 @@
                         <router-link class="nav-link" to="/about">About</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/apartments">Apartments</router-link>
-                    </li>
-                    <li class="nav-item">
                         <router-link class="nav-link" to="/register">Register</router-link>
                     </li>
                     <li class="nav-item">
@@ -25,18 +22,15 @@
                     <li class="nav-item">
                         <router-link class="nav-link" to="/reset-password">Reset Password</router-link>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="$store.state.profile.role != null" class="nav-item">
                         <a class="nav-link" v-on:click="logout">Logout</a>
                     </li>
-                    <li class="nav-item" v-if="$store.state.profile.role != null">
-                        <a class="nav-link" v-on:click="userScope()">User</a>
+                    <li v-if="$store.state.profile.role != null && $store.state.profile.role === 'admin'" class="nav-item">
+                        <router-link class="nav-link" to="/admin">Admin</router-link>
                     </li>
-                    <li class="nav-item" v-if="$store.state.profile.role != null">
-                        <a class="nav-link" v-on:click="adminScope()">Admin</a>
+                    <li v-if="$store.state.profile.role != null && $store.state.profile.role === 'user'" class="nav-item">
+                        <router-link class="nav-link" to="/user">User</router-link>
                     </li>
-<!--                    <li class="nav-item" v-if="$store.state.role == 'user'">-->
-<!--                        <a class="nav-link">{{$store.state.profile.role}}</a>-->
-<!--                    </li>-->
                 </ul>
             </div>
         </div>
@@ -44,8 +38,7 @@
 </template>
 
 <script>
-    import * as auth from '../services/auth_service'
-    import * as user from '../services/user_service'
+    import * as auth from '../services/auth_service';
     export default {
         name: 'Header',
         mounted() {
@@ -55,23 +48,9 @@
             logout: async function() {
                 if (auth.isLoggedIn()) {
                     auth.logout();
-                }
-                this.$router.push('/login');
-            },
-            userScope: async function() {
-                try {
-                    const response = await user.userScope();
-                    console.log(response);
-                } catch (error) {
-                    console.log(' ' + error, error.response.status);
-                }
-            },
-            adminScope: async function() {
-                try {
-                    const response = await user.adminScope();
-                    console.log(response);
-                } catch (error) {
-                    console.log(' ' + error, error.response.status);
+                    if (this.$router.path !== '/login') {
+                        this.$router.push('/login');
+                    }
                 }
             },
         },

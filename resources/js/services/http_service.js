@@ -21,7 +21,7 @@ export function httpFile() {
     return axios.create({
         baseURL: store.state.apiURL,
         headers: {
-            // Authorization: 'Bearer ' + auth.getAccessToken(),
+            'Authorization': 'Bearer '+auth.getAccessToken(),
             'Content-Type' : 'multipart/form-data'
         }
     });

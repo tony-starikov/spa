@@ -68,7 +68,13 @@
                         time: 5000
                     });
 
-                    this.$router.push('apartments');
+                    if (auth.getUserRole() === 'admin') {
+                        this.$router.push('/admin');
+                    } else {
+                        this.$router.push('/user');
+                    }
+
+                    // this.$router.push('/');
                 } catch (error) {
                     switch (error.response.status) {
                         case 422:

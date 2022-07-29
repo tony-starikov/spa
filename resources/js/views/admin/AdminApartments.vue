@@ -84,9 +84,9 @@
 </template>
 
 <script>
-import * as apartmentService from '../services/apartment_service'
+import * as apartmentService from '../../services/admin_apartment_service';
 export default {
-    name: 'Apartments',
+    name: 'apartments',
     data() {
         return {
             apartments: {},
@@ -112,7 +112,7 @@ export default {
         // },
         loadApartments: async function(page = 1) {
             try {
-                const response = await apartmentService.loadAllApartmentPaginate(page);
+                const response = await apartmentService.loadAdminAllApartmentPaginate(page);
                 this.apartments = response.data;
                 // const response = await apartmentService.loadAllApartment();
                 // this.apartments = response.data.data;
@@ -138,7 +138,7 @@ export default {
                 formData.append('image', this.editApartmentData.image);
                 formData.append('_method', 'put');
 
-                const response = await apartmentService.updateApartment(this.editApartmentData.id, formData);
+                const response = await apartmentService.updateAdminApartment(this.editApartmentData.id, formData);
                 // await console.log(response.data);
                 // await this.apartments.data.map(
                 //     apartment => {
@@ -154,7 +154,7 @@ export default {
                 //     }
                 // );
 
-                await this.loadApartments();
+                await this.loadAllApartmentPaginate();
 
                 this.flashMessage.success({
                     message: 'Apartment updated successfully!',
@@ -176,7 +176,7 @@ export default {
             }
 
             try {
-                await apartmentService.deleteApartment(apartment.id);
+                await apartmentService.deleteAdminApartment(apartment.id);
 
                 // this.apartments.data = this.apartments.data.filter(
                 //     obj => {
@@ -224,7 +224,7 @@ export default {
             formData.append('image', this.apartmentData.image);
 
             try {
-                const response = await apartmentService.createApartment(formData);
+                const response = await apartmentService.createAdminApartment(formData);
                 // console.log(response);
 
                 // this.apartments.data = Object.entries(this.apartments.data);
@@ -236,7 +236,7 @@ export default {
 
                 // await console.log(this.apartments.data);
 
-                await this.loadApartments();
+                await this.loadAllApartmentPaginate();
 
                 this.flashMessage.success({
                     message: 'Apartment stored successfully!',

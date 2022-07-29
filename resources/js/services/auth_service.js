@@ -29,8 +29,10 @@ export function isLoggedIn() {
 }
 
 export function logout() {
-    const response = httpWithAuth().get('/auth/logout');
-    localStorage.removeItem('laravel-spa');
+    if (isLoggedIn()) {
+        const response = httpWithAuth().get('/auth/logout');
+        localStorage.removeItem('laravel-spa');
+    }
 }
 
 export function getAccessToken() {
