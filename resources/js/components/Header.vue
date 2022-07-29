@@ -26,10 +26,10 @@
                         <a class="nav-link" v-on:click="logout">Logout</a>
                     </li>
                     <li v-if="$store.state.profile.role != null && $store.state.profile.role === 'admin'" class="nav-item">
-                        <router-link class="nav-link" to="/admin">Admin</router-link>
+                        <router-link class="nav-link" to="/admin">Dashboard</router-link>
                     </li>
                     <li v-if="$store.state.profile.role != null && $store.state.profile.role === 'user'" class="nav-item">
-                        <router-link class="nav-link" to="/user">User</router-link>
+                        <router-link class="nav-link" to="/user">Dashboard</router-link>
                     </li>
                 </ul>
             </div>
@@ -43,6 +43,16 @@
         name: 'Header',
         mounted() {
             console.log('Component Header mounted.');
+        },
+        beforeCreate: async function() {
+            try {
+                if (auth.isLoggedIn()) {
+                    const response = await auth.getProfile();
+                    this.$store.dispatch('authenticate', response.data);
+                }
+            } catch (error) {
+                auth.logout();
+            }
         },
         methods: {
             logout: async function() {

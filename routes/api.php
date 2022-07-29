@@ -38,6 +38,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'user'], function () {
 
     Route::group(['middleware' => 'scope:user'], function () {
 
+        Route::post('email-confirm', [AuthController::class, 'emailConfirm']);
+        Route::get('resend-email-confirm', [AuthController::class, 'resendEmailConfirm']);
+
         Route::resource('/apartments', UserApartmentController::class);
 
     });

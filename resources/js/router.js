@@ -12,6 +12,7 @@ import AdminApartments from "./views/admin/AdminApartments";
 import Admin from "./views/admin/Admin"
 import UserApartments from "./views/user/UserApartments";
 import User from "./views/user/User"
+import EmailConfirm from "./views/autentication/EmailConfirm";
 
 Vue.use(Router);
 
@@ -71,6 +72,18 @@ const routes = [
                 next();
             } else {
                 next('/');
+            }
+        }
+    },
+    {
+        path: '/email-confirm',
+        name: 'email-confirm',
+        component: EmailConfirm,
+        beforeEnter(to, from, next) {
+            if (auth.isLoggedIn()) {
+                next();
+            } else {
+                next('/404');
             }
         }
     },

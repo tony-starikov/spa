@@ -24,11 +24,33 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
 
+        $random = rand(11111, 99999);
+        $user->email_verification_code = $random;
+
         if ($user->save()) {
-            return response()->json([
-               'message' => 'User created successfully!',
-                'status_code' => 201
-            ], 201);
+            $userData = [
+                'email' => $user->email,
+                'name' => $user->name,
+                'random' => $random,
+            ];
+
+            Mail::send('emails.confirm_email', $userData, function($message) use ($userData) {
+                $message->from('no-reply@test-project', 'Tony');
+                $message->to($userData['email'], $userData['name']);
+                $message->subject('Confirm Mail Request');
+            });
+
+            if (Mail::failures()) {
+                return response()->json([
+                    'message' => 'Some error occurred, Please try again!',
+                    'status_code' => 500
+                ], 500);
+            } else {
+                return response()->json([
+                    'message' => 'User created successfully! Please confirm your email address.',
+                    'status_code' => 201
+                ], 201);
+            }
         } else {
             return response()->json([
                 'message' => 'Some error occurred, Please try again!',
@@ -185,6 +207,75 @@ class AuthController extends Controller
                     'status_code' => 500
                 ], 500);
             }
+        }
+    }
+
+    public function emailConfirm(Request $request)
+    {
+        $request->validate([
+            'email_verification_code' => 'required|integer',
+        ]);
+
+        $user = Auth::user();
+
+        if ($user->email_verification_code == $request->email_verification_code) {
+
+            $user->email_verified = 1;
+            if ($user->save()) {
+                return response()->json([
+                    'message' => 'Email confirmed successfully.',
+                    'status_code' => 200
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Some error occurred, Please try again!',
+                    'status_code' => 500
+                ], 500);
+            }
+        } else {
+            return response()->json([
+                'message' => 'Invalid code',
+                'status_code' => 401
+            ], 401);
+        }
+    }
+
+    public function resendEmailConfirm()
+    {
+        $user = Auth::user();
+
+        $random = rand(11111, 99999);
+        $user->email_verification_code = $random;
+
+        if ($user->save()) {
+            $userData = [
+                'email' => $user->email,
+                'name' => $user->name,
+                'random' => $random,
+            ];
+
+            Mail::send('emails.confirm_email', $userData, function($message) use ($userData) {
+                $message->from('no-reply@test-project', 'Tony');
+                $message->to($userData['email'], $userData['name']);
+                $message->subject('Confirm Mail Request');
+            });
+
+            if (Mail::failures()) {
+                return response()->json([
+                    'message' => 'Some error occurred, Please try again!',
+                    'status_code' => 500
+                ], 500);
+            } else {
+                return response()->json([
+                    'message' => 'Email resend successfully.',
+                    'status_code' => 200
+                ], 200);
+            }
+        } else {
+            return response()->json([
+                'message' => 'Some error occurred, Please try again!',
+                'status_code' => 500
+            ], 500);
         }
     }
 }

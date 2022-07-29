@@ -70,3 +70,11 @@ export function resetPasswordRequest(user) {
 export function resetPassword(user) {
     return http().post('/auth/reset-password', user);
 }
+
+export function emailConfirm(user) {
+    return httpWithAuth().post('/user/email-confirm', user);
+}
+
+export function emailResend() {
+    return httpWithAuth().get('/user/resend-email-confirm');
+}
